@@ -22,12 +22,17 @@ dependencyResolutionManagement {
 rootProject.name = "close_pick"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
-include(":core")
-//include(":feature")
-//include(":feature:home")
-//include(":feature:main")
 
-//Feature
+
+//core
+include(
+    "core:data",
+    ":core:domain",
+    ":core:router",
+    ":core:router:router"
+)
+
+//feature
 include(
     "feature:main",
     "feature:home",
