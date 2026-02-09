@@ -1,0 +1,37 @@
+name: Update Localization Strings
+
+on:
+  workflow_dispatch: # (중요) 버튼 클릭으로 실행하겠다는 뜻입니다.
+
+jobs:
+  update-strings:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Lokalise CLI
+        run: |
+          curl -sfL https://raw.githubusercontent.com/lokalise/lokalise-cli-2-go/master/install.sh | sh
+          sudo mv bin/lokalise2 /usr/local/bin/lokalise2
+
+      - name: Download strings from Lokalise
+        run: |
+          lokalise2 file download \
+            --token "${{ secrets.LOKALISE_API_TOKEN }}" \
+            --project-id "${{ secrets.LOKALISE_PROJECT_ID }}" \
+            --format xml \
+            --unzip_to "app/src/main/res/" \
+            --original_filenames=false \
+            --bundle_structure "values-%LANG_ISO%/strings.xml" \
+            --export_empty_as "base" \
+            --include_tags "android"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update localization strings from Lokalise"
+          title: "🌐 [Lokalise] 최신 번역 반영"
+          body: "Lokalise에서 최신 번역 파일을 가져와 업데이트했습니다. 내용을 확인 후 머지해주세요."
+          branch: "lokalise-update"
