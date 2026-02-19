@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.llama.home"
+    namespace = "com.llama.join"
     compileSdk = 36
 
     defaultConfig {
